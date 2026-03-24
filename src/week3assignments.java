@@ -1,63 +1,62 @@
 import java.util.*;
 
 class week3assignments {
-    static class Client {
-        String name;
-        int risk;
-        int balance;
+    static void merge(int[] arr, int l, int m, int r) {
+        int[] temp = new int[r - l + 1];
+        int i = l, j = m + 1, k = 0;
 
-        Client(String n, int r, int b) {
-            name = n;
-            risk = r;
-            balance = b;
+        while (i <= m && j <= r) {
+            if (arr[i] <= arr[j]) temp[k++] = arr[i++];
+            else temp[k++] = arr[j++];
         }
 
-        public String toString() {
-            return name + ":" + risk;
+        while (i <= m) temp[k++] = arr[i++];
+        while (j <= r) temp[k++] = arr[j++];
+
+        for (i = l, k = 0; i <= r; i++, k++) arr[i] = temp[k];
+    }
+
+    static void mergeSort(int[] arr, int l, int r) {
+        if (l < r) {
+            int m = (l + r) / 2;
+            mergeSort(arr, l, m);
+            mergeSort(arr, m + 1, r);
+            merge(arr, l, m, r);
         }
     }
 
-    static void bubbleSort(Client[] arr) {
-        int n = arr.length;
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - i - 1; j++) {
-                if (arr[j].risk > arr[j + 1].risk) {
-                    Client temp = arr[j];
-                    arr[j] = arr[j + 1];
-                    arr[j + 1] = temp;
-                }
+    static int partition(int[] arr, int l, int r) {
+        int pivot = arr[r];
+        int i = l - 1;
+        for (int j = l; j < r; j++) {
+            if (arr[j] > pivot) {
+                i++;
+                int t = arr[i]; arr[i] = arr[j]; arr[j] = t;
             }
         }
+        int t = arr[i + 1]; arr[i + 1] = arr[r]; arr[r] = t;
+        return i + 1;
     }
 
-    static void insertionSort(Client[] arr) {
-        for (int i = 1; i < arr.length; i++) {
-            Client key = arr[i];
-            int j = i - 1;
-            while (j >= 0 && (arr[j].risk < key.risk ||
-                    (arr[j].risk == key.risk && arr[j].balance < key.balance))) {
-                arr[j + 1] = arr[j];
-                j--;
-            }
-            arr[j + 1] = key;
+    static void quickSort(int[] arr, int l, int r) {
+        if (l < r) {
+            int p = partition(arr, l, r);
+            quickSort(arr, l, p - 1);
+            quickSort(arr, p + 1, r);
         }
     }
 
     public static void main(String[] args) {
-        Client[] arr = {
-                new Client("A", 20, 1000),
-                new Client("B", 50, 2000),
-                new Client("C", 80, 1500)
-        };
+        int[] arr = {500, 100, 300};
 
-        bubbleSort(arr);
+        mergeSort(arr, 0, arr.length - 1);
         System.out.println(Arrays.toString(arr));
 
-        insertionSort(arr);
+        quickSort(arr, 0, arr.length - 1);
         System.out.println(Arrays.toString(arr));
 
-        for (int i = 0; i < arr.length && i < 10; i++) {
-            System.out.println(arr[i]);
-        }
+        int sum = 0;
+        for (int x : arr) sum += x;
+        System.out.println(sum);
     }
 }
